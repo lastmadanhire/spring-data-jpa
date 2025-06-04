@@ -1,5 +1,6 @@
 package com.autowired;
 
+import com.github.javafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,20 +16,33 @@ public class App {
     CommandLineRunner commandLineRunner(StudentRepository studentRepository){
 
         return args -> {
-            Student student = new Student(
+            generateRandomStudents(studentRepository);
+            System.out.println(studentRepository.count());
+            System.out.println("all student names");
+            studentRepository.findAll().forEach(student1 -> {
+                System.out.println(student1.getFirstName());
+            });
+        };
+    }
+
+    private static void generateRandomStudents(StudentRepository studentRepository) {
+        Faker faker = new Faker();
+        for (int i=0;i<=100;i++){
+            String firstName= faker.name().firstName();
+            String lastName= faker.name().lastName();
+            String email= """
+                    %s.%s@autowired.com
+                    """.formatted(firstName,lastName);
+            Student student=new Student(
                     null,
-                    "Last",
-                    "Madanhire",
-                    "lastmadanhire557@gmail.com",
-                    32
+                    firstName,
+                    lastName,
+                    email,
+                    faker.number().numberBetween(17,55)
             );
             studentRepository.save(student);
-            System.out.println(studentRepository.count());
-            System.out.println(studentRepository.findAll());
-            System.out.println(studentRepository.findById(1L));
 
-
-        };
+        }
     }
 
 }
