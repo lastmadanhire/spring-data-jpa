@@ -5,6 +5,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @SpringBootApplication
 public class App {
@@ -19,10 +23,23 @@ public class App {
             generateRandomStudents(studentRepository);
             System.out.println(studentRepository.count());
             System.out.println("all student names");
-            studentRepository.findAll().forEach(student1 -> {
-                System.out.println(student1.getFirstName());
-            });
+
         };
+    }
+
+    private static void pagination(StudentRepository studentRepository) {
+        Pageable pageable= PageRequest.of(0,10, Sort.Direction.ASC);
+        Page<Student> page= studentRepository.findAll(pageable);
+        System.out.println(page);
+        System.out.println(page.getTotalElements());
+    }
+
+    private static void sort(StudentRepository studentRepository) {
+        Sort sort=Sort.by("firstName").descending().
+                and(Sort.by("lastName").descending());
+        studentRepository.findAll(sort).forEach(student1 -> {
+            System.out.println(student1.getFirstName());
+        });
     }
 
     private static void generateRandomStudents(StudentRepository studentRepository) {
