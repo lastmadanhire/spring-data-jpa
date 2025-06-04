@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: spring-data-jpa-mysql
+    image: mysql
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Create123*
+      POSTGRES_DB: data_jpa
+    ports:
+      - "3306:3307"
+    restart: unless-stopped
+    volumes:
+      - db:/data/mysql
+    networks:
+      - autowired
+
+networks:
+  amigos:
+    driver: bridge
+
+volumes:
+  db:
